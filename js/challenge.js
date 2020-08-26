@@ -3,10 +3,18 @@ document.addEventListener("DOMContentLoaded", function(){
     const number = document.getElementById("counter")
     let counterInt = parseInt(number.innerText)
 
-    setInterval(function(){
-        number.innerText = counterInt += 1
-    }, 1000);
-        
+let startCounter =() => {
+        setInterval(function(){
+            number.innerText = counterInt += 1
+        }, 1000);
+    }
+    startCounter()
+    
+    function pauseCounter() {
+        clearInterval(startCounter)
+    }
+
+
     const minusButton = document.getElementById("minus")
     const plusButton = document.getElementById("plus")
 
@@ -38,6 +46,24 @@ document.addEventListener("DOMContentLoaded", function(){
             likeContainer.innerHTML += `<li class="likeNumber" data-counter="${counterInt}">${counterInt} - 1 likes</li>`
             
         }
+        
+    })
+
+    const pauseButton = document.getElementById('pause')
+
+    pauseButton.addEventListener("click", function(e){
+        e.preventDefault();
+
+        if(e.target.innerText === "pause"){
+            pauseButton.innerText = "resume"
+            // resets timer to zero
+            pauseCounter()
+        } else if(e.target.innerText === "resume") {
+            pauseButton.innerText = "pause"
+            startCounter()
+        }
+        
+
         
     })
     
