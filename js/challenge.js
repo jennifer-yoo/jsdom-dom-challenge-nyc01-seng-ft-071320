@@ -1,70 +1,75 @@
 document.addEventListener("DOMContentLoaded", function(){
 
     const number = document.getElementById("counter")
-    let counterInt = parseInt(number.innerText)
+    let paused = false
 
-let startCounter =() => {
-        setInterval(function(){
-            number.innerText = counterInt += 1
+    let startCounter = setInterval(function(){
+            number.innerText = parseInt(number.innerText) + 1
         }, 1000);
-    }
-    startCounter()
-    
+        
     function pauseCounter() {
         clearInterval(startCounter)
     }
 
-
     const minusButton = document.getElementById("minus")
-    const plusButton = document.getElementById("plus")
-
     minusButton.addEventListener("click", function(e) {
-            counterInt -= 1
+        number.innerText = parseInt(number.innerText) - 1 
     })
 
+    const plusButton = document.getElementById("plus")
     plusButton.addEventListener("click", function(e) {
-        counterInt += 1
+        number.innerText = parseInt(number.innerText) + 1    
     })
 
     const like = document.getElementById("heart")
     const likeContainer = document.querySelector('.likes')
     
     like.addEventListener("click", function(e) {
-        
         let numberLikes = document.querySelectorAll('.likeNumber')
         let likeArr = Array.from(numberLikes)
-        
-        let x = likeArr.find(ele => ele.dataset.counter === counterInt.toString())
+        let x = likeArr.find(ele => ele.dataset.counter === number.innerText.toString())
         
         if(x) {
-            console.dir(x)
-            
+            //console.dir(x)
             let currentLikes = parseInt(x.textContent.split(' ')[2])
-            
-            x.innerText = `${counterInt} - ${currentLikes += 1} likes`
+            x.innerText = `${number.innerText} - ${currentLikes += 1} likes`
         } else {
-            likeContainer.innerHTML += `<li class="likeNumber" data-counter="${counterInt}">${counterInt} - 1 likes</li>`
-            
-        }
-        
+            likeContainer.innerHTML += `<li class="likeNumber" data-counter="${number.innerText}">${number.innerText} - 1 likes</li>`
+        }   
     })
 
     const pauseButton = document.getElementById('pause')
-
-    pauseButton.addEventListener("click", function(e){
-        e.preventDefault();
-
-        if(e.target.innerText === "pause"){
-            pauseButton.innerText = "resume"
-            // resets timer to zero
-            pauseCounter()
-        } else if(e.target.innerText === "resume") {
-            pauseButton.innerText = "pause"
-            startCounter()
+    document.addEventListener("click", function(e){
+        const buttons = document.querySelectorAll('button')
+     if (e.target.id === 'pause') {
+        if (!paused) {
+                pauseCounter();
+                buttons.forEach(button=> {
+                    if (button.id !== 'pause') {
+                    button.disabled = true }
+                })
+                paused = true
+                pauseButton.innerText = "resume"
+        } else if (paused) {
+            startCounter = setInterval(function(){
+                number.innerText = parseInt(number.innerText) + 1
+            }, 1000);
+            buttons.forEach(button=> {
+                if (button.id !== 'pause') {
+                    button.disabled = false }
+                })
+                    paused = false
+                    pauseButton.innerText = "pause"
         }
-        
-
-        
+    }
     })
     
+    document.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const commentBox = document.getElementById('list')
+        const oneComment = document.createElement('div')
+        oneComment.textContent = e.target[0].value
+        commentBox.appendChild(oneComment)        
+    })
+
 })
